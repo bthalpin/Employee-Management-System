@@ -3,8 +3,8 @@ const db = require('../../utils/database');
 const index = require('../index');
 const server = require('../../server');
 
-const addRole = () => {
-    console.log(server)
+const addRole = (callback) => {
+    // console.log(server)
     inquirer
     .prompt([
         {
@@ -33,7 +33,7 @@ const addRole = () => {
                 // console.log(fields);
             }
         )
-        server.mainMen();
+        callback();
     })
     // Name of role?
     // Salary of role

@@ -1,27 +1,34 @@
 const db = require('../utils/database');
 const addRole = require('./role/addRole');
-const route = (choice) => {
+const showRoles = require('./role/showRoles');
+const addEmployee = require('./employee/addEmployee')
+
+const route = (choice,callback) => {
     switch (choice){
         case 'Add a new role':
-            addRole();
+            addRole(callback);
             break;
         case 'showRoles':
-            showRoles();
+            showRoles(callback)
+            .then(data=>{
+                console.log(data);
+                callback();
+            });
             break;
         case 'addEmployee':
-            addEmployee();
+            addEmployee(callback);
             break;
         case 'View all employees':
-            showEmployees();
+            showEmployees(callback);
             break;
         case 'changeRole':
-            changeRole();
+            changeRole(callback);
             break;
         case 'addDepartment':
-            addDepartment();
+            addDepartment(callback);
             break;
         case 'showDepartments':
-            showDepartments();
+            showDepartments(callback);
             break;
         default:
             // Ends program

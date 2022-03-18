@@ -121,12 +121,7 @@ const mainMenu =() =>{
             }
         ]).then(answer=>
             {
-                route(answer.choice)
+                route(answer.choice,mainMenu)
             })
 }
-
 mainMenu()
-
-module.exports = {
-    mainMenu
-};
