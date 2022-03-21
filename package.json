@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/bthalpin/Employee-Management-System#readme",
   "dependencies": {
+    "asciiart-logo": "^0.2.6",
     "console.table": "^0.10.0",
     "inquirer": "^8.2.1",
     "mysql2": "^2.3.3"
