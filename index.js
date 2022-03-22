@@ -129,6 +129,7 @@ async function viewEmployees() {
 async function viewEmployeesByManager(){
   const manager = await db.getManager();
   
+  // Creates list of managers for prompt
   const managerChoices = manager.map(({ id, first_name,last_name }) => {
     return {name:`${first_name} ${last_name}`,value:id}
 
@@ -141,8 +142,12 @@ async function viewEmployeesByManager(){
       choices: managerChoices
     }
   ]);
+
+  // Returns manager information for console.log
   const selectedManager = await db.findOne('employee',managerId)
   const employees = await db.findAllEmployeesByManager(managerId);
+
+
   if(employees.length){
     console.log(`\nEmployees with ${selectedManager[0].first_name} ${selectedManager[0].last_name} as a manager: \n`);
     console.table(employees);
@@ -158,6 +163,7 @@ async function viewEmployeesByManager(){
 async function viewEmployeesByDepartment() {
   const departments = await db.findAllDepartments();
   
+  // Creates list of departments for prompt
   const departmentChoices = departments.map(({ id, name }) => {
     return {name:name,value:id}
   });
@@ -171,9 +177,12 @@ async function viewEmployeesByDepartment() {
     }
   ]);
 
+  // Returns department information for console.log
+  const department = await db.findOne('department',departmentId)
   const employees = await db.findAllEmployeesByDepartment(departmentId);
+
   if (employees.length){
-    console.log("\n");
+    console.log(`\nAll employees in the ${department[0].name} department: \n`);
     console.table(employees);
   } else {
     console.table('\nThere are currently no employees in this department.\n');
@@ -186,6 +195,7 @@ async function viewEmployeesByDepartment() {
 async function updateEmployeeRole() {
   const employees = await db.findAllEmployees();
 
+  // Creates list of employees for prompt
   const employeeChoices = employees.map(({ id, first_name, last_name }) => {
     return {name:`${first_name} ${last_name}`,value:id}
   });
@@ -225,6 +235,7 @@ async function updateEmployeeRole() {
 async function updateEmployeeManager (){
   const employees = await db.findAllEmployees();
 
+  // Creates list of employees for prompt
   const employeeChoices = employees.map(({ id, first_name, last_name }) => {
     return {name:`${first_name} ${last_name}`,value:id}
   });
@@ -237,10 +248,14 @@ async function updateEmployeeManager (){
       choices: employeeChoices
     }
   ]);
+
   const managers = await db.findAllPossibleManagers(employeeId);
+
+  // Creates list of managers for prompt
   const managerChoices = managers.map(({ id, first_name, last_name }) => {
     return {name:`${first_name} ${last_name}`,value:id}
   });
+
   const employee = await db.findOne('employee',employeeId);
   const { managerId } = await prompt([
     {
@@ -250,10 +265,12 @@ async function updateEmployeeManager (){
       choices: managerChoices
     }
   ]);
+
   db.updateEmployeeManager(employeeId,managerId)
   
   const manager = await db.findOne('employee',managerId);
   console.log(`\n${employee[0].first_name} ${employee[0].last_name}'s manager was changed to ${manager[0].first_name} ${manager[0].last_name}\n`)
+  
   loadMainPrompts();
 }
 
@@ -269,6 +286,7 @@ async function viewRoles() {
 async function addRole() {
   const departments = await db.findAllDepartments();
 
+  // Creates list of departments for prompt
   const departmentChoices = departments.map(({ id, name }) => ({
     name: name,
     value: id
@@ -337,6 +355,7 @@ async function addEmployee() {
     }
   ]);
 
+  // Creates list of roles for prompt
   const roleChoices = roles.map(({ id, title }) => ({
     name: title,
     value: id
@@ -351,9 +370,12 @@ async function addEmployee() {
 
   employee.role_id = roleId;
 
+  // Creates list of managers for prompt
   const managerChoices = employees.map(({ id, first_name, last_name }) => {
     return {name:`${first_name} ${last_name}`,value:id}
   });
+
+  // Adds a choice of None to beginning of list
   managerChoices.unshift({ name: "None", value: null });
 
   const { managerId } = await prompt({
@@ -376,9 +398,12 @@ async function addEmployee() {
 
 async function deleteEmployee () {
   const employees = await db.findAllEmployees();
+
+  // Creates list of employees for prompt
   const employeeChoices = employees.map(({id,first_name,last_name})=>{
     return {name:`${first_name} ${last_name}`,value:id}
   })
+
   const {employee} = await prompt([
     {
       type:'list',
@@ -387,8 +412,10 @@ async function deleteEmployee () {
       choices:employeeChoices
     }
   ]);
+
   const deletedEmployee = await db.findOne('employee',employee)
-  await db.removeEmployee(employee)
+  await db.removeOne('employee',employee)
+
   console.log(
     `\n${deletedEmployee[0].first_name} ${deletedEmployee[0].last_name} removed from the database\n`
   );
@@ -397,9 +424,12 @@ async function deleteEmployee () {
 
 async function deleteRole () {
   const roles = await db.findAllRoles();
+
+  // Creates list of roles for prompt
   const roleChoices = roles.map(({id,title})=>{
     return {name:`${title}`,value:id}
   })
+
   const {role} = await prompt([
     {
       type:'list',
@@ -408,8 +438,10 @@ async function deleteRole () {
       choices:roleChoices
     }
   ]);
+
   const deletedRole = await db.findOne('role',role)
   await db.removeOne('role',role)
+
   console.log(
     `\n${deletedRole[0].title} removed from the database\n`
   );
@@ -418,9 +450,12 @@ async function deleteRole () {
 
 async function deleteDepartment () {
   const departments = await db.findAllDepartments();
+
+  // Creates list of departments for prompt
   const departmentChoices = departments.map(({id,name})=>{
     return {name:`${name}`,value:id}
   })
+
   const {department} = await prompt([
     {
       type:'list',
@@ -429,8 +464,10 @@ async function deleteDepartment () {
       choices:departmentChoices
     }
   ]);
+
   const deletedDepartment = await db.findOne('department',department)
   await db.removeOne('department',department)
+  
   console.log(
     `\n${deletedDepartment[0].name} removed from the database\n`
   );
