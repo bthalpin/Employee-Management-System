@@ -13,7 +13,7 @@ class DB {
         // id, first_name, last_name FROM employee TABLE AND department name from department TABLE AND SELECT salary FROM role TABLE
         // YOUR NEED TO USE LEFT JOINS TO JOIN THREE TABLES
         // TODO: YOUR CODE HERE
-        'SELECT employee.id,employee.first_name,employee.last_name,department.name,role.salary \
+        'SELECT employee.id,employee.first_name,employee.last_name,role.title,department.name AS Department,role.salary,employee.manager_id \
         FROM employee LEFT JOIN role ON employee.role_id = role.id \
         LEFT JOIN department ON role.department_id = department.id'
       );
@@ -38,7 +38,7 @@ class DB {
       return this.connection.query(
         // TODO: YOUR CODE HERE
         'UPDATE employee SET role_id = ? WHERE id = ?',
-        [employeeId,roleId]
+        [roleId,employeeId]
       );
     }
   
@@ -95,8 +95,8 @@ class DB {
         "SELECT employee.id, employee.first_name, employee.last_name, role.title \
         FROM employee \
         LEFT JOIN role on employee.role_id = role.id \
-        LEFT JOIN department department on role.department_id = department.id \
-        WHERE department.id = ?;",
+        LEFT JOIN department on role.department_id = department.id \
+        WHERE department.id = ?",
         departmentId
       );
     }
@@ -105,8 +105,29 @@ class DB {
     findAllEmployeesByManager(managerId) {
       return this.connection.query(
         // TODO: YOUR CODE HERE
-  
+        'SELECT id,first_name,last_name FROM employee WHERE manager_id = ?',managerId
       );
+    }
+
+    // Removes a row for the table name passed in with the id equal to the passed in id
+    removeOne(table,id){
+      return this.connection.query(
+        `DELETE FROM ${table} WHERE id = ?`,id
+      )
+    }
+
+    // Returns one matching row from the passed in table where the id matches
+    findOne(table,id){
+      return this.connection.query(
+        `SELECT * FROM ${table} WHERE id = ?`,id
+      )
+    }
+
+    // Returns only employee that manage at least one person
+    getManager(){
+      return this.connection.query(
+        'SELECT DISTINCT m.id, m.first_name,m.last_name FROM employee AS e JOIN employee AS m  WHERE e.manager_id=m.id'
+      )
     }
   }
   
