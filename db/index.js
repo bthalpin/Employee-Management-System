@@ -9,10 +9,6 @@ class DB {
     // Find all employees, join with roles and departments to display their roles, salaries, departments, and managers
     findAllEmployees() {
       return this.connection.query(
-        // CREATE SELECT STATMENT WITH THE FOLLOWING COLUMNS FROM THREE TABLES.
-        // id, first_name, last_name FROM employee TABLE AND department name from department TABLE AND SELECT salary FROM role TABLE
-        // YOUR NEED TO USE LEFT JOINS TO JOIN THREE TABLES
-        // TODO: YOUR CODE HERE
         'SELECT employee.id,employee.first_name,employee.last_name,role.title,department.name AS Department,role.salary,employee.manager_id \
         FROM employee LEFT JOIN role ON employee.role_id = role.id \
         LEFT JOIN department ON role.department_id = department.id'
@@ -36,7 +32,6 @@ class DB {
     // Update the given employee's role
     updateEmployeeRole(employeeId, roleId) {
       return this.connection.query(
-        // TODO: YOUR CODE HERE
         'UPDATE employee SET role_id = ? WHERE id = ?',
         [roleId,employeeId]
       );
@@ -53,10 +48,6 @@ class DB {
     // Find all roles, join with departments to display the department name
     findAllRoles() {
       return this.connection.query(
-        // SELECT THE FOLLOWING COLUMNS:
-        // id, title, salary FROM role TABLE AND department name FROM department TABLE
-        // YOU NEED TO USE LEFT JOIN TO JOIN role and department TABLES
-        // TODO: YOUR CODE HERE
         'SELECT role.id,role.title,role.salary,department.name FROM role LEFT JOIN department ON department.id = role.department_id'
       );
     }
@@ -64,7 +55,6 @@ class DB {
     // Create a new role
     createRole(role) {
       return this.connection.query(
-        // TODO: YOUR CODE HERE
         'INSERT INTO role (title,salary,department_id) VALUES (?,?,?)',
         [role.title,role.salary,role.department_id]
         );
@@ -84,7 +74,6 @@ class DB {
     // Create a new department
     createDepartment(department) {
       return this.connection.query(
-        // TODO: YOUR CODE HERE
         'INSERT INTO department (name) VALUES (?)',department.name
       );
     }
@@ -104,7 +93,6 @@ class DB {
     // Find all employees by manager, join with departments and roles to display titles and department names
     findAllEmployeesByManager(managerId) {
       return this.connection.query(
-        // TODO: YOUR CODE HERE
         'SELECT id,first_name,last_name FROM employee WHERE manager_id = ?',managerId
       );
     }

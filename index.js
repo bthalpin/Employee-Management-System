@@ -227,7 +227,9 @@ async function updateEmployeeRole() {
 
   await db.updateEmployeeRole(employeeId, roleId);
 
-  console.log("Updated employee's role");
+  const employee = await db.findOne('employee',employeeId);
+  const selectedRole = await db.findOne('role',roleId)
+  console.log(`\nUpdated ${employee[0].first_name} ${employee[0].last_name}'s role to ${selectedRole[0].title}\n`);
 
   loadMainPrompts();
 }
@@ -309,6 +311,7 @@ async function addRole() {
     }
   ]);
 
+  role.title =role.title.trim();
   await db.createRole(role);
 
   console.log(`\nAdded ${role.title} to the database\n`);
@@ -332,7 +335,7 @@ async function addDepartment() {
       message: "What is the name of the department?"
     }
   ]);
-
+  department.name = department.name.trim();
   await db.createDepartment(department);
 
   console.log(`\nAdded ${department.name} to the database\n`);
@@ -354,7 +357,9 @@ async function addEmployee() {
       message: "What is the employee's last name?"
     }
   ]);
-
+  employee.first_name = employee.first_name.trim();
+  employee.last_name = employee.last_name.trim();
+  
   // Creates list of roles for prompt
   const roleChoices = roles.map(({ id, title }) => ({
     name: title,
